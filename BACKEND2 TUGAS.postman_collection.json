@@ -1,0 +1,298 @@
+{
+  "info": {
+    "_postman_id": "787409ae-bd1d-4b04-a29e-531b9f89578e",
+    "name": "BACKEND2 TUGAS",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53555655",
+    "_collection_link": "https://go.postman.co/collection/53555655-787409ae-bd1d-4b04-a29e-531b9f89578e?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Thrift API",
+      "item": [
+        {
+          "name": "CREATE NEW PRODUCT",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {\r",
+                  "    pm.response.to.have.status(201);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Product created\", function () {\r",
+                  "    const json = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(json).to.have.property(\"id\");\r",
+                  "    pm.expect(json).to.have.property(\"name\");\r",
+                  "    pm.expect(json).to.have.property(\"price\");\r",
+                  "    pm.expect(json).to.have.property(\"condition\");\r",
+                  "    pm.expect(json).to.have.property(\"stock\");\r",
+                  "\r",
+                  "    pm.environment.set(\"product_id\", json.id);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Jaket Uniqlo\",\r\n    \"description\": \"Jaket Uniqlo vintage keren\",\r\n    \"price\": 190000,\r\n    \"condition\": \"baik\",\r\n    \"size\": \"L\",\r\n    \"brand\": \"Uniqlo\",\r\n    \"stock\": 1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/products",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "UPDATE PRODUCT",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Product updated\", function () {\r",
+                  "    const json = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(json).to.have.property(\"id\");\r",
+                  "    pm.expect(json.name).to.eql(\"Jaket Updated\");\r",
+                  "    pm.expect(json.description).to.eql(\"Jaket sudah diupdate\");\r",
+                  "    pm.expect(json.price).to.eql(20000);\r",
+                  "    pm.expect(json.condition).to.eql(\"baik\");\r",
+                  "    pm.expect(json.stock).to.eql(3);\r",
+                  "\r",
+                  "    pm.environment.set(\"product_id\", json.id)\r",
+                  "});\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Jaket Updated\",\r\n  \"description\": \"Jaket sudah diupdate\",\r\n  \"price\": 20000,\r\n  \"condition\": \"baik\",\r\n  \"stock\": 3\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{url}}/products/{{product_id}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "products",
+                "{{product_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET ALL DATA",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Response has pagination fields\", function () {\r",
+                  "    const json = pm.response.json();\r",
+                  "    pm.expect(json).to.have.property(\"page\")\r",
+                  "    pm.expect(json).to.have.property(\"limit\")\r",
+                  "    pm.expect(json).to.have.property(\"data\")\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"data is an array\", function(){\r",
+                  "    const json = pm.response.json()\r",
+                  "\r",
+                  "    pm.expect(json.data).to.be.an('array')\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/products?page=1&limit=20",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET BY ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function(){\r",
+                  "    pm.response.to.have.status(200)\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"Menu has correct structure\", function(){\r",
+                  "    const json = pm.response.json()\r",
+                  "    pm.expect(json).to.have.property(\"id\");\r",
+                  "    pm.expect(json).to.have.property(\"name\");\r",
+                  "    pm.expect(json).to.have.property(\"price\");\r",
+                  "    pm.expect(json).to.have.property(\"condition\");\r",
+                  "    pm.expect(json).to.have.property(\"stock\");\r",
+                  "\r",
+                  "    pm.environment.set(\"product_id\", json.id)\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/products/{{product_id}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "products",
+                "{{product_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "});\r",
+                  "\r",
+                  "pm.test(\"Product deleted\", function () {\r",
+                  "    const json = pm.response.json();\r",
+                  "\r",
+                  "    pm.expect(json).to.have.property(\"message\");\r",
+                  "    pm.expect(json.message).to.eql(\"Product deleted successfully\");\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{url}}/products/{{product_id}}",
+              "host": [
+                "{{url}}"
+              ],
+              "path": [
+                "products",
+                "{{product_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "url",
+      "value": ""
+    },
+    {
+      "key": "product_id",
+      "value": ""
+    }
+  ]
+}
